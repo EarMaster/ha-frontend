@@ -9,7 +9,7 @@ import {
   mdiShareVariant,
 } from "@mdi/js";
 import type { CSSResultGroup, PropertyValues, TemplateResult } from "lit";
-import { LitElement, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import memoizeOne from "memoize-one";
 import { storage } from "../../../common/decorators/storage";
@@ -211,19 +211,22 @@ class HaBlueprintOverview extends LitElement {
         template: (blueprint) => {
           const count = blueprint.usageCount ?? 0;
           return html`
-            <ha-assist-chip
-              filled
-              .active=${count > 0}
-              label=${String(count)}
-              title=${blueprint.error
-                ? String(count)
-                : this.hass.localize(
-                    `ui.panel.config.blueprint.overview.view_${blueprint.type}`
-                  )}
-              ?disabled=${blueprint.error}
-              data-fullpath=${blueprint.fullpath}
-              @click=${this._handleUsageClick}
-            ></ha-assist-chip>
+            <div class="usage-chip-row">
+              <ha-assist-chip
+                filled
+                class="usage-chip"
+                .active=${count > 0}
+                label=${String(count)}
+                title=${blueprint.error
+                  ? String(count)
+                  : this.hass.localize(
+                      `ui.panel.config.blueprint.overview.view_${blueprint.type}`
+                    )}
+                ?disabled=${blueprint.error}
+                data-fullpath=${blueprint.fullpath}
+                @click=${this._handleUsageClick}
+              ></ha-assist-chip>
+            </div>
           `;
         },
       },
@@ -677,7 +680,20 @@ class HaBlueprintOverview extends LitElement {
   }
 
   static get styles(): CSSResultGroup {
-    return haStyle;
+    return [
+      haStyle,
+      css`
+        .usage-chip-row {
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+        }
+
+        .usage-chip-row .usage-chip {
+          margin-inline-start: auto;
+        }
+      `,
+    ];
   }
 }
 
